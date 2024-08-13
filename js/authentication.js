@@ -5,17 +5,17 @@ if (!localStorage.getItem("users")) {
 function register() {
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
-  const repassword = document.getElementById("repassword").value;
+  const repeatPassword = document.getElementById("repeatPassword").value;
 
-  if (email !== "" && password !== "" && repassword !== "") {
-    if (password !== repassword) {
-      alert("Repassword not match!");
+  if (email !== "" && password !== "" && repeatPassword !== "") {
+    if (password !== repeatPassword) {
+      alert("Repeat password not match!");
       return;
     }
-    let users = JSON.parse(localStorage.getItem("users")) || [];
-    const userExists = users.some((user) => user.email === email);
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+    const isUserExists = users.some((user) => user.email === email);
 
-    if (userExists) {
+    if (isUserExists) {
       alert("Email is already registered!");
       return;
     }
@@ -23,6 +23,7 @@ function register() {
     const newUser = {
       email: email,
       password: password,
+      taskList: [],
     };
     users.push(newUser);
 
@@ -69,11 +70,7 @@ window.onload = function () {
   const currentSessionUser = JSON.parse(sessionStorage.getItem("currentUser"));
   const currentPage = window.location.pathname.split("/").pop();
 
-  if (rememberedUser) {
-    if (currentPage === "login.html" || currentPage === "signup.html") {
-      window.location.href = "../index.html";
-    }
-  } else if (currentSessionUser) {
+  if (rememberedUser || currentSessionUser) {
     if (currentPage === "login.html" || currentPage === "signup.html") {
       window.location.href = "../index.html";
     }

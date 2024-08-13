@@ -1,8 +1,19 @@
+const users = JSON.parse(localStorage.getItem("users"));
+const currentUser =
+  JSON.parse(localStorage.getItem("rememberedUser")) ||
+  JSON.parse(sessionStorage.getItem("currentUser"));
 function tasks() {
-  this.listTask = [];
+  this.listTask = currentUser.taskList;
   this.idCounter = 0;
 }
-
+tasks.prototype.setLocalStorage = function () {
+  users.forEach((user) => {
+    if (user.email === currentUser.email) {
+      user.taskList = this.listTask;
+    }
+  });
+  localStorage.setItem("users", JSON.stringify(users));
+};
 tasks.prototype.addTask = function () {
   const taskName = document.getElementById("inputValue").value.trim();
   if (taskName !== "") {
@@ -14,12 +25,13 @@ tasks.prototype.addTask = function () {
         completed: filterStatus == "done",
       };
       this.listTask.push(newTask);
+      this.setLocalStorage();
       this.cancelTask();
       this.sortTask();
       this.filterTask();
     } else {
       alert("already have this task");
-      cancelTask();
+      this.cancelTask();
     }
   }
 };
@@ -49,9 +61,8 @@ tasks.prototype.cancelTask = function () {
 };
 
 tasks.prototype.deleteTask = function (id) {
-  this.listTask.filter((item, index) =>
-    item.id === id ? this.listTask.splice(index, 1) : ""
-  );
+  this.listTask = this.listTask.filter((item) => item.id !== id);
+  this.setLocalStorage();
   this.render(this.listTask);
 };
 
@@ -66,7 +77,8 @@ tasks.prototype.editTask = function (id) {
       alert("Already have this task !");
     } else {
       task.name = newTaskName.trim();
-      this.render();
+      this.setLocalStorage();
+      this.render(this.listTask);
     }
   }
 };
@@ -115,6 +127,7 @@ tasks.prototype.sortTask = function () {
 };
 
 let newTaskList = new tasks();
+newTaskList.render(currentUser.taskList);
 
 // DOM
 document.getElementById("addButton").addEventListener("click", function () {
