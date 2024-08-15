@@ -1,9 +1,26 @@
+window.onload = function () {
+  const rememberedUser = JSON.parse(localStorage.getItem("rememberedUser"));
+  const currentSessionUser = JSON.parse(sessionStorage.getItem("currentUser"));
+  const currentPage = window.location.pathname.split("/").pop();
+  console.log(1);
+  if (rememberedUser) {
+    document.getElementById(
+      "greeting"
+    ).innerText = `Hello ${rememberedUser.email}, bạn đã đăng nhập`;
+  } else if (currentSessionUser) {
+    document.getElementById(
+      "greeting"
+    ).innerText = `Hello ${currentSessionUser.email}, bạn đã đăng nhập`;
+  } else if (currentPage === "index.html" || currentPage === "") {
+    window.location.href = "/html/login.html";
+  }
+};
 const users = JSON.parse(localStorage.getItem("users"));
 const currentUser =
   JSON.parse(localStorage.getItem("rememberedUser")) ||
   JSON.parse(sessionStorage.getItem("currentUser"));
 function tasks() {
-  this.listTask = currentUser.taskList;
+  this.listTask = currentUser.taskList || [];
   this.idCounter = 0;
 }
 tasks.prototype.setLocalStorage = function () {
@@ -149,20 +166,3 @@ function logout() {
   alert("Logout successful!");
   window.location.href = "./html/login.html";
 }
-
-window.onload = function () {
-  const rememberedUser = JSON.parse(localStorage.getItem("rememberedUser"));
-  const currentSessionUser = JSON.parse(sessionStorage.getItem("currentUser"));
-  const currentPage = window.location.pathname.split("/").pop();
-  if (rememberedUser) {
-    document.getElementById(
-      "greeting"
-    ).innerText = `Hello ${rememberedUser.email}, bạn đã đăng nhập`;
-  } else if (currentSessionUser) {
-    document.getElementById(
-      "greeting"
-    ).innerText = `Hello ${currentSessionUser.email}, bạn đã đăng nhập`;
-  } else if (currentPage === "index.html" || currentPage === "") {
-    window.location.href = "/html/login.html";
-  }
-};
